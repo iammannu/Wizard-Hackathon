@@ -1,0 +1,300 @@
+[alphaforage v2] Autonomous Investment Intelligence Platform ready
+[alphaforage v2] http://localhost:8000/docs
+INFO:     127.0.0.1:55487 - "POST /api/v1/intelligence/research/sync HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62964 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61553 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53206 - "POST /api/v1/workspaces HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53174 - "GET /api/v1/workspaces/526e6be3-23f3-4fc3-a715-647793cc92a3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57551 - "GET /api/v1/workspaces/526e6be3-23f3-4fc3-a715-647793cc92a3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60317 - "POST /api/v1/workspaces/526e6be3-23f3-4fc3-a715-647793cc92a3/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54996 - "GET /api/v1/workspaces/526e6be3-23f3-4fc3-a715-647793cc92a3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54566 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49677 - "GET /api/v1/workspaces/526e6be3-23f3-4fc3-a715-647793cc92a3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62149 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53172 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65489 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52531 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52904 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57389 - "POST /api/v1/intelligence/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52281 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52275 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52274 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52283 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52282 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52280 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59164 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64016 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64017 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64906 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64907 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64909 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50214 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50062 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57275 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55285 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61062 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53449 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64689 - "POST /api/v1/screener/screen HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59600 - "POST /api/v1/intelligence/research HTTP/1.1" 200 OK
+[alphaforage v2] Autonomous Investment Intelligence Platform ready
+[alphaforage v2] http://localhost:8000/docs
+[alphaforage v2] Autonomous Investment Intelligence Platform ready
+[alphaforage v2] http://localhost:8000/docs
+INFO:     127.0.0.1:56029 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62818 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56027 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56028 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56025 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56026 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64807 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61087 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64810 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54053 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52855 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52856 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63886 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61520 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54814 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54642 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52632 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52634 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51765 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51767 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63160 - "POST /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54487 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64722 - "GET /api/v1/workspaces/0eb4f473-66a7-45a7-a30c-7f217df4e8a7 HTTP/1.1" 200 OK
+[alphaforage v2] Autonomous Investment Intelligence Platform ready
+[alphaforage v2] http://localhost:8000/docs
+[alphaforage v2] Autonomous Investment Intelligence Platform ready
+[alphaforage v2] http://localhost:8000/docs
+INFO:     127.0.0.1:53106 - "POST /api/v1/screener/screen HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59335 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59330 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59333 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59332 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59331 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59334 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56033 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54738 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56035 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52546 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52547 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52548 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62706 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62707 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62708 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56009 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55378 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55380 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55058 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64087 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52030 - "POST /api/v1/screener/screen HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53719 - "POST /api/v1/intelligence/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55535 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55541 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58314 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55540 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55542 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55543 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58654 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59902 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65160 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65162 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65165 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65166 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53445 - "GET /api/v1/market/stocks/NVIDIA/fundamentals HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58018 - "GET /api/v1/market/stocks/NVDA/fundamentals HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55493 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60450 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64836 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64529 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60449 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55280 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55282 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50870 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53485 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53486 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56743 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60296 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60298 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65376 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61344 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58302 - "GET /api/v1/workspaces/526e6be3-23f3-4fc3-a715-647793cc92a3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51088 - "GET /api/v1/workspaces/526e6be3-23f3-4fc3-a715-647793cc92a3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59153 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53585 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60253 - "POST /api/v1/workspaces HTTP/1.1" 201 Created
+INFO:     127.0.0.1:60521 - "GET /api/v1/workspaces/c735416b-84f9-4893-ac4b-73767e6b7bb4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51883 - "GET /api/v1/workspaces/c735416b-84f9-4893-ac4b-73767e6b7bb4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57921 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65227 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55503 - "POST /api/v1/workspaces HTTP/1.1" 201 Created
+INFO:     127.0.0.1:58705 - "GET /api/v1/workspaces/4175a8c6-e557-4f22-80d7-5a5837ecf7a4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59788 - "GET /api/v1/workspaces/4175a8c6-e557-4f22-80d7-5a5837ecf7a4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51210 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60910 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56685 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56692 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60700 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56690 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56686 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56691 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51183 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51336 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51337 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51340 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51343 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51341 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57028 - "POST /api/v1/workspaces HTTP/1.1" 201 Created
+INFO:     127.0.0.1:49182 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62756 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52081 - "POST /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49817 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52504 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62586 - "POST /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60594 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52218 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57769 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64755 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53100 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58647 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62766 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55427 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53711 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54714 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55756 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61666 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62614 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56432 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62659 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62660 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62661 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53260 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59684 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59683 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49226 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49228 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61559 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59353 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52745 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59954 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59957 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59958 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59960 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62253 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62257 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62256 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61629 - "GET /api/v1/market/stocks/AAPL/fundamentals HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50303 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61959 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63246 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54437 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64722 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57944 - "POST /api/v1/workspaces HTTP/1.1" 201 Created
+INFO:     127.0.0.1:50387 - "GET /api/v1/workspaces/5f7b3db9-719d-43d9-bb98-38471c842b96 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54115 - "GET /api/v1/workspaces/5f7b3db9-719d-43d9-bb98-38471c842b96 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64043 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64575 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63709 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65219 - "GET /api/v1/workspaces/82fbc098-b522-4922-8d90-d637b13c3fd5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54196 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55972 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53142 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65211 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55388 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59416 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55140 - "POST /api/v1/workspaces HTTP/1.1" 201 Created
+INFO:     127.0.0.1:58422 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59125 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59132 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57282 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59282 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55300 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55335 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57889 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53587 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51687 - "POST /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63423 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52610 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60298 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60300 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60302 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56181 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56984 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56986 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56988 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52208 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55735 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49230 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+[finnhub] quote MSFT: 
+[finnhub] quote NVDA: 
+[finnhub] quote AAPL: 
+[finnhub] quote GOOGL: 
+[finnhub] quote META: 
+[finnhub] quote TSLA: 
+[finnhub] quote META: 
+[finnhub] quote GOOGL: 
+[finnhub] quote AAPL: 
+[finnhub] quote NVDA: 
+[finnhub] quote TSLA: 
+[finnhub] quote MSFT: 
+[polygon] prev-close AAPL: 
+INFO:     127.0.0.1:52994 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 404 Not Found
+[polygon] prev-close TSLA: 
+INFO:     127.0.0.1:55819 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 404 Not Found
+[polygon] prev-close MSFT: 
+INFO:     127.0.0.1:55812 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 404 Not Found
+[polygon] prev-close META: 
+INFO:     127.0.0.1:55818 - "GET /api/v1/market/stocks/META HTTP/1.1" 404 Not Found
+[polygon] prev-close GOOGL: 
+INFO:     127.0.0.1:55817 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 404 Not Found
+[polygon] prev-close NVDA: 
+INFO:     127.0.0.1:55813 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:50654 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49723 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49680 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49684 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49682 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49685 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49683 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49681 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57139 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+[polygon] prev-close GOOGL: Client error '429 Too Many Requests' for url 'https://api.polygon.io/v2/aggs/ticker/GOOGL/prev?adjusted=true&apiKey=gXjqicckzpJpj7Tf8uxQKFXhViwAKgCQ'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+INFO:     127.0.0.1:57140 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:57138 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57142 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57143 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57141 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60086 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58559 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64868 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57083 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63634 - "POST /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113/research HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62327 - "GET /api/v1/workspaces HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62615 - "GET /api/v1/workspaces/c0ac87cd-095c-4a79-8efe-60b87098f113 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60686 - "POST /api/v1/screener/screen HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58631 - "POST /api/v1/intelligence/research HTTP/1.1" 200 OK
+[polygon] candles MSFT: 
+[polygon] news MSFT: 
+[finnhub] fundamentals MSFT: 
+INFO:     127.0.0.1:60188 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60192 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60189 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60193 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60185 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61564 - "GET /api/v1/market/stocks/META HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61562 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61561 - "GET /api/v1/market/stocks/GOOGL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61559 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52550 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52553 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52554 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63504 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63508 - "GET /api/v1/market/stocks/NVDA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63507 - "GET /api/v1/market/stocks/MSFT HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57873 - "GET /api/v1/market/stocks/AAPL HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49989 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60366 - "GET /api/v1/market/stocks/TSLA HTTP/1.1" 200 OK
