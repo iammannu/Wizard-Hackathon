@@ -251,6 +251,7 @@ Generate institutional-grade investment thesis as JSON:
   "bull_case": {{"summary":"string","key_points":["3-4 specific points with data"],"probability":0-1}},
   "bear_case": {{"summary":"string","key_points":["3-4 specific points with data"],"probability":0-1}},
   "key_risks": ["4-5 specific risks with context"],
+  "key_assumptions": ["3-4 load-bearing assumptions this thesis depends on"],
   "invalidation_conditions": ["3 conditions that would invalidate the bull case"],
   "known_unknowns": ["3-4 things we cannot currently assess"]
 }}
@@ -269,6 +270,7 @@ Be specific. Reference actual agent findings. Institutional quality.""",
     state.bull_case = result.get("bull_case", {})
     state.bear_case = result.get("bear_case", {})
     state.key_risks = result.get("key_risks", [])
+    state.key_assumptions = result.get("key_assumptions", [])
     state.invalidation_conditions = result.get("invalidation_conditions", [])
     state.known_unknowns = result.get("known_unknowns", [])
     await emit({"type": "synthesis_complete", "confidence": boosted_confidence})

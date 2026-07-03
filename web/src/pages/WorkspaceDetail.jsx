@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Send, Loader2, Zap, CheckCircle, Clock, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { ArrowLeft, Send, Loader2, Zap, CheckCircle, Clock, AlertCircle, ChevronDown, ChevronUp, History } from 'lucide-react'
 import { useWorkspaceStore } from '../store/index.js'
 import { workspaceApi } from '../lib/api.js'
+import { LIFECYCLE_META, CHANGE_TYPE_META, CLAIM_STATUS_META } from '../lib/thesisConstants.js'
 
 const SIGNAL_COLOR = { bullish: 'var(--bull)', bearish: 'var(--bear)', neutral: 'var(--muted)', active: 'var(--accent2)' }
 const SIGNAL_BG   = { bullish: 'rgba(0,203,169,0.1)', bearish: 'rgba(255,107,107,0.1)', neutral: 'rgba(255,255,255,0.04)', active: 'rgba(108,92,231,0.1)' }
@@ -156,6 +157,17 @@ export default function WorkspaceDetail() {
               {/* Thesis summary */}
               {result && (
                 <ThesisSummary result={result} />
+              )}
+
+              {/* Living Thesis — persistent intelligence layer, always visible once a thesis exists */}
+              {workspace?.thesis_version_count > 0 && (
+                <LivingThesisPanel
+                  workspaceId={id}
+                  versionCount={workspace.thesis_version_count}
+                  lifecycleStage={workspace.thesis_lifecycle_stage}
+                  convictionScore={workspace.conviction_score}
+                  thesisSignal={workspace.thesis_signal}
+                />
               )}
 
               {/* Debate */}
@@ -374,6 +386,263 @@ function ThesisSummary({ result }) {
               </div>
             ))}
           </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Living Thesis ─────────────────────────────────────────────────────────────
+// The persistent intelligence layer: how the thesis has evolved across
+// research runs, not just what it says right now (that's ThesisSummary above).
+
+function LivingThesisPanel({ workspaceId, versionCount, lifecycleStage, convictionScore, thesisSignal }) {
+  const [versions, setVersions] = useState([])
+  const [history, setHistory] = useState([])
+  const [claims, setClaims] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [selectedVersionId, setSelectedVersionId] = useState(null)
+  const [selectedDetail, setSelectedDetail] = useState(null)
+  const [claimsFilter, setClaimsFilter] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    Promise.all([
+      workspaceApi.getThesisVersions(workspaceId),
+      workspaceApi.getConfidenceHistory(workspaceId),
+      workspaceApi.getThesisClaims(workspaceId),
+    ]).then(([v, h, c]) => {
+      if (cancelled) return
+      setVersions(v)
+      setHistory(h)
+      setClaims(c)
+      setSelectedVersionId(null)
+      setSelectedDetail(null)
+    }).catch(console.error).finally(() => !cancelled && setLoading(false))
+    return () => { cancelled = true }
+  }, [workspaceId, versionCount])
+
+  async function selectVersion(versionId) {
+    if (selectedVersionId === versionId) {
+      setSelectedVersionId(null)
+      setSelectedDetail(null)
+      return
+    }
+    setSelectedVersionId(versionId)
+    try {
+      const detail = await workspaceApi.getThesisVersion(workspaceId, versionId)
+      setSelectedDetail(detail)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const lm = LIFECYCLE_META[lifecycleStage] || LIFECYCLE_META.forming
+  const convColor = convictionScore >= 0.75 ? 'var(--bull)' : convictionScore >= 0.5 ? 'var(--warn)' : 'var(--muted)'
+
+  const claimCounts = claims.reduce((acc, c) => { acc[c.status] = (acc[c.status] || 0) + 1; return acc }, {})
+  const visibleClaims = claimsFilter ? claims.filter(c => c.status === claimsFilter) : []
+
+  return (
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: '14px', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+        <History size={15} style={{ color: 'var(--accent2)' }} />
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, flex: 1 }}>Living Thesis</span>
+
+        <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', padding: '3px 10px', borderRadius: '20px', background: `${lm.color}18`, color: lm.color, border: `1px solid ${lm.color}44`, fontWeight: 600 }}>
+          {lm.icon} {lm.label}
+        </span>
+
+        <span style={{ fontSize: '11px', color: 'var(--muted)' }}>
+          v{versionCount} · <span style={{ color: SIGNAL_COLOR[thesisSignal] || 'var(--muted)', fontWeight: 600, textTransform: 'capitalize' }}>{thesisSignal}</span>
+        </span>
+
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '16px', fontWeight: 700, color: convColor, lineHeight: 1 }}>{Math.round((convictionScore || 0) * 100)}%</div>
+          <div style={{ fontSize: '9px', color: 'var(--muted)' }}>conviction</div>
+        </div>
+      </div>
+
+      {loading ? (
+        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--muted)', fontSize: '12px' }}>
+          <Loader2 size={16} style={{ animation: 'spin 0.7s linear infinite' }} />
+        </div>
+      ) : (
+        <>
+          {/* Conviction sparkline */}
+          {history.length > 1 && (
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', fontWeight: 600 }}>Conviction Over Time</div>
+              <Sparkline
+                data={history.map((h, i) => ({ value: h.conviction_score, label: `v${i + 1}`, signal: h.signal }))}
+                color={lm.color}
+              />
+            </div>
+          )}
+
+          {/* Version timeline */}
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px', fontWeight: 600 }}>Version History</div>
+            <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+              {versions.map(v => {
+                const ct = CHANGE_TYPE_META[v.change_type]
+                const isSelected = selectedVersionId === v.id
+                const sc = SIGNAL_COLOR[v.signal] || 'var(--muted)'
+                return (
+                  <button key={v.id} onClick={() => selectVersion(v.id)}
+                    style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 12px', borderRadius: '9px', border: `1px solid ${isSelected ? sc : 'var(--border)'}`, background: isSelected ? `${sc}14` : 'var(--surface2)', cursor: 'pointer', minWidth: '78px', textAlign: 'left', transition: 'all 0.15s' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: sc, flexShrink: 0 }} />
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700 }}>v{v.version_number}</span>
+                    </div>
+                    <span style={{ fontSize: '9px', color: ct?.color || 'var(--muted)', fontWeight: 600 }}>{ct?.label || 'Initial'}</span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--muted)' }}>{Math.round(v.conviction_score * 100)}%</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {selectedDetail && (
+              <VersionDiffCard version={selectedDetail} />
+            )}
+          </div>
+
+          {/* Claims tracker */}
+          {claims.length > 0 && (
+            <div style={{ padding: '16px 20px' }}>
+              <div style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px', fontWeight: 600 }}>Claim Tracker · {claims.length} tracked</div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {Object.entries(CLAIM_STATUS_META).filter(([status]) => claimCounts[status]).map(([status, meta]) => (
+                  <button key={status} onClick={() => setClaimsFilter(f => f === status ? null : status)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', border: `1px solid ${claimsFilter === status ? meta.color : `${meta.color}33`}`, background: claimsFilter === status ? `${meta.color}18` : 'transparent', color: meta.color, fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s' }}>
+                    {meta.label} <span style={{ fontFamily: 'var(--font-mono)' }}>{claimCounts[status]}</span>
+                  </button>
+                ))}
+              </div>
+
+              {claimsFilter && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '12px' }}>
+                  {visibleClaims.map(c => (
+                    <div key={c.id} style={{ fontSize: '12px', color: 'var(--muted)', display: 'flex', gap: '8px', alignItems: 'flex-start', padding: '8px 10px', background: 'var(--surface2)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                      <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: 'var(--accent2)', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>{c.claim_type.replace(/_/g, ' ')}</span>
+                      <span style={{ flex: 1 }}>{c.claim_text}</span>
+                      <span style={{ fontSize: '10px', color: 'var(--muted)', flexShrink: 0 }}>×{c.appearance_count}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
+function VersionDiffCard({ version }) {
+  const diff = version.diff
+  if (!diff) {
+    return (
+      <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--muted)', fontStyle: 'italic' }}>
+        Initial version — no prior thesis to compare against.
+      </div>
+    )
+  }
+
+  const sections = [
+    ['Key Risks', diff.key_risks],
+    ['Assumptions', diff.key_assumptions],
+    ['Invalidation Conditions', diff.invalidation_conditions],
+    ['Bull Points', diff.bull_points],
+    ['Bear Points', diff.bear_points],
+  ].filter(([, d]) => d && (d.added.length || d.removed.length))
+
+  return (
+    <div style={{ marginTop: '12px', padding: '14px', background: 'var(--surface2)', borderRadius: '10px', border: '1px solid var(--border)' }}>
+      <div style={{ display: 'flex', gap: '16px', marginBottom: sections.length ? '12px' : 0, flexWrap: 'wrap' }}>
+        <div style={{ fontSize: '11px', color: 'var(--muted)' }}>
+          Signal: <span style={{ color: SIGNAL_COLOR[diff.previous_signal], fontWeight: 600 }}>{diff.previous_signal}</span>
+          {diff.signal_changed && <> → <span style={{ color: SIGNAL_COLOR[diff.new_signal], fontWeight: 600 }}>{diff.new_signal}</span></>}
+        </div>
+        <div style={{ fontSize: '11px', color: 'var(--muted)' }}>
+          Conviction Δ <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: diff.conviction_delta >= 0 ? 'var(--bull)' : 'var(--bear)' }}>
+            {diff.conviction_delta >= 0 ? '+' : ''}{Math.round(diff.conviction_delta * 100)}%
+          </span>
+        </div>
+      </div>
+      {sections.map(([label, d]) => (
+        <div key={label} style={{ marginBottom: '8px' }}>
+          <div style={{ fontSize: '10px', color: 'var(--muted)', fontWeight: 600, marginBottom: '4px' }}>{label}</div>
+          {d.added.map((t, i) => (
+            <div key={`a${i}`} style={{ fontSize: '11px', color: 'var(--bull)', paddingLeft: '10px' }}>+ {t}</div>
+          ))}
+          {d.removed.map((t, i) => (
+            <div key={`r${i}`} style={{ fontSize: '11px', color: 'var(--bear)', paddingLeft: '10px', textDecoration: 'line-through', opacity: 0.7 }}>− {t}</div>
+          ))}
+        </div>
+      ))}
+      {!sections.length && (
+        <div style={{ fontSize: '11px', color: 'var(--muted)', fontStyle: 'italic' }}>No structural changes — thesis content held steady.</div>
+      )}
+    </div>
+  )
+}
+
+function Sparkline({ data, color = 'var(--accent2)', height = 48 }) {
+  const [hoverIdx, setHoverIdx] = useState(null)
+  const svgRef = useRef(null)
+
+  if (!data.length) return null
+  const values = data.map(d => d.value)
+  const min = Math.min(...values), max = Math.max(...values)
+  const range = max - min || 1
+  const padY = 6
+  const width = 100 // percentage-based viewBox; scales with container via preserveAspectRatio=none
+
+  const points = data.map((d, i) => ({
+    x: data.length === 1 ? width / 2 : (i / (data.length - 1)) * width,
+    y: padY + (1 - (d.value - min) / range) * (height - padY * 2),
+    ...d,
+  }))
+
+  const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ')
+  const last = points[points.length - 1]
+  const hovered = hoverIdx != null ? points[hoverIdx] : null
+
+  function handleMove(e) {
+    const rect = svgRef.current.getBoundingClientRect()
+    const relX = ((e.clientX - rect.left) / rect.width) * width
+    let nearest = 0
+    let best = Infinity
+    points.forEach((p, i) => {
+      const dist = Math.abs(p.x - relX)
+      if (dist < best) { best = dist; nearest = i }
+    })
+    setHoverIdx(nearest)
+  }
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <svg ref={svgRef} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" style={{ width: '100%', height: `${height}px`, display: 'block', cursor: 'crosshair' }}
+        onMouseMove={handleMove} onMouseLeave={() => setHoverIdx(null)}>
+        <path d={path} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+        {hovered && (
+          <line x1={hovered.x} x2={hovered.x} y1={padY} y2={height - padY} stroke={color} strokeWidth="1" strokeOpacity="0.35" vectorEffect="non-scaling-stroke" />
+        )}
+        <circle cx={last.x} cy={last.y} r="2.5" fill={color} />
+        {hovered && (
+          <circle cx={hovered.x} cy={hovered.y} r="3" fill={color} stroke="var(--surface)" strokeWidth="1.5" />
+        )}
+      </svg>
+      {/* Direct end-label — only the latest value, not every point */}
+      <div style={{ position: 'absolute', top: 0, right: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color }}>
+        {Math.round(last.value * 100)}%
+      </div>
+      {hovered && (
+        <div style={{ position: 'absolute', bottom: '-2px', left: `${hovered.x}%`, transform: 'translateX(-50%)', fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--muted)', background: 'var(--surface2)', padding: '2px 6px', borderRadius: '4px', border: '1px solid var(--border)', whiteSpace: 'nowrap' }}>
+          {hovered.label} · {Math.round(hovered.value * 100)}%
         </div>
       )}
     </div>

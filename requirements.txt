@@ -5,6 +5,7 @@ uvicorn[standard]==0.30.6
 # Database
 sqlalchemy==2.0.35
 aiosqlite==0.20.0          # SQLite async driver (swap for asyncpg when moving to Postgres)
+alembic==1.13.3            # Schema migrations — production-grade, Postgres-compatible
 
 # Auth
 python-jose[cryptography]==3.3.0

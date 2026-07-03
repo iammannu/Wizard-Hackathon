@@ -5,8 +5,9 @@ CRUD + streaming research within a persistent workspace context.
 import uuid
 import json
 import asyncio
+import logging
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
@@ -14,7 +15,14 @@ from sqlalchemy import select, update
 
 from app.core.database import get_db
 from app.models.workspace import Workspace, WorkspaceResearch
+from app.models.thesis import ThesisVersion, ConfidenceSnapshot, ThesisClaim
 from app.agents.supervisor import run_research
+from app.thesis.versioner import create_thesis_version
+
+logger = logging.getLogger(__name__)
+
+VALID_CLAIM_STATUSES = {"active", "strengthened", "confirmed", "weakened", "refuted"}
+MAX_PAGE_LIMIT = 200
 
 router = APIRouter(prefix="/api/v1/workspaces", tags=["workspaces"])
 
@@ -217,7 +225,9 @@ async def workspace_research_stream(workspace_id: str, body: WorkspaceResearchRe
             yield f"data: {json.dumps(payload)}\n\n"
 
             # Persist to DB after payload is sent
-            await _save_research(workspace_id, body.query, state, payload)
+            thesis_version = await _save_research(workspace_id, body.query, state, payload)
+            if thesis_version:
+                yield f"data: {json.dumps({'type': 'thesis_version', 'thesis_version': thesis_version})}\n\n"
 
             yield f"data: {json.dumps({'type': 'complete', 'session_id': session_id})}\n\n"
 
@@ -285,7 +295,7 @@ async def workspace_research_sync(workspace_id: str, body: WorkspaceResearchRequ
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        await _save_research(workspace_id, body.query, state, result)
+        result["thesis_version"] = await _save_research(workspace_id, body.query, state, result)
         return result
 
     except Exception as e:
@@ -306,6 +316,102 @@ async def get_research_history(workspace_id: str):
         return [h.to_dict() for h in history]
 
 
+# ── Living Thesis ───────────────────────────────────────────────────────────────
+
+@router.get("/{workspace_id}/thesis")
+async def get_current_thesis(workspace_id: str):
+    """Full detail of the workspace's current (latest) thesis version."""
+    async for db in get_db():
+        ws = await _get_ws(db, workspace_id)
+        if not ws.current_thesis_version_id:
+            return {"workspace_id": workspace_id, "thesis_version": None}
+
+        result = await db.execute(
+            select(ThesisVersion).where(ThesisVersion.id == ws.current_thesis_version_id)
+        )
+        version = result.scalar_one_or_none()
+        return {
+            "workspace_id": workspace_id,
+            "thesis_lifecycle_stage": ws.thesis_lifecycle_stage,
+            "conviction_score": ws.conviction_score,
+            "thesis_signal": ws.thesis_signal,
+            "thesis_version_count": ws.thesis_version_count,
+            "thesis_version": version.to_dict() if version else None,
+        }
+
+
+@router.get("/{workspace_id}/thesis/versions")
+async def list_thesis_versions(workspace_id: str, limit: int = Query(50, ge=1, le=MAX_PAGE_LIMIT)):
+    """Lightweight version history for the timeline view."""
+    async for db in get_db():
+        ws = await _get_ws(db, workspace_id)
+        result = await db.execute(
+            select(ThesisVersion)
+            .where(ThesisVersion.workspace_id == ws.id)
+            .order_by(ThesisVersion.version_number.desc())
+            .limit(limit)
+        )
+        versions = result.scalars().all()
+        return [v.to_summary_dict() for v in versions]
+
+
+@router.get("/{workspace_id}/thesis/versions/{version_id}")
+async def get_thesis_version(workspace_id: str, version_id: str):
+    """Full detail of one thesis version, including its diff from the prior one."""
+    async for db in get_db():
+        ws = await _get_ws(db, workspace_id)
+        try:
+            version_uuid = uuid.UUID(version_id)
+        except ValueError:
+            raise HTTPException(400, "Invalid thesis version ID")
+
+        result = await db.execute(
+            select(ThesisVersion).where(
+                ThesisVersion.id == version_uuid, ThesisVersion.workspace_id == ws.id
+            )
+        )
+        version = result.scalar_one_or_none()
+        if not version:
+            raise HTTPException(404, "Thesis version not found")
+        return version.to_dict()
+
+
+@router.get("/{workspace_id}/thesis/confidence-history")
+async def get_confidence_history(workspace_id: str, limit: int = Query(100, ge=1, le=500)):
+    """Time series of confidence/conviction — feeds the sparkline chart."""
+    async for db in get_db():
+        ws = await _get_ws(db, workspace_id)
+        result = await db.execute(
+            select(ConfidenceSnapshot)
+            .where(ConfidenceSnapshot.workspace_id == ws.id)
+            .order_by(ConfidenceSnapshot.snapshot_at.asc())
+            .limit(limit)
+        )
+        snapshots = result.scalars().all()
+        return [s.to_dict() for s in snapshots]
+
+
+@router.get("/{workspace_id}/thesis/claims")
+async def get_thesis_claims(workspace_id: str, status: Optional[str] = None):
+    """
+    Atomic claims tracked across thesis versions, newest-confirmed first.
+    Optional ?status= filter: active | strengthened | confirmed | weakened | refuted
+    """
+    if status is not None and status not in VALID_CLAIM_STATUSES:
+        raise HTTPException(400, f"Invalid status. Must be one of: {', '.join(sorted(VALID_CLAIM_STATUSES))}")
+
+    async for db in get_db():
+        ws = await _get_ws(db, workspace_id)
+        query = select(ThesisClaim).where(ThesisClaim.workspace_id == ws.id)
+        if status:
+            query = query.where(ThesisClaim.status == status)
+        query = query.order_by(ThesisClaim.last_confirmed_version.desc())
+
+        result = await db.execute(query)
+        claims = result.scalars().all()
+        return [c.to_dict() for c in claims]
+
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 async def _get_ws(db, workspace_id: str) -> Workspace:
@@ -321,8 +427,13 @@ async def _get_ws(db, workspace_id: str) -> Workspace:
     return ws
 
 
-async def _save_research(workspace_id: str, query: str, state, result_dict: dict):
-    """Persist research result and update workspace confidence/thesis."""
+async def _save_research(workspace_id: str, query: str, state, result_dict: dict) -> Optional[dict]:
+    """
+    Persist research result, update workspace confidence/thesis, and version
+    the Living Thesis. Returns the new thesis version's summary dict (or None
+    if the workspace no longer exists or versioning fails) so callers can
+    surface it to the client without a second round trip.
+    """
     try:
         async for db in get_db():
             ws_uuid = uuid.UUID(workspace_id)
@@ -336,15 +447,39 @@ async def _save_research(workspace_id: str, query: str, state, result_dict: dict
                 confidence=state.confidence,
             )
             db.add(research)
+            await db.flush()  # assign research.id for the ThesisVersion FK
 
-            # Update workspace with latest thesis and confidence
             ws_result = await db.execute(select(Workspace).where(Workspace.id == ws_uuid))
             ws = ws_result.scalar_one_or_none()
-            if ws:
-                ws.thesis = state.recommendation
-                ws.confidence = state.confidence
-                ws.updated_at = datetime.now(timezone.utc)
+            if not ws:
+                await db.rollback()
+                return None
+
+            ws.thesis = state.recommendation
+            ws.confidence = state.confidence
+            ws.updated_at = datetime.now(timezone.utc)
+
+            # create_thesis_version() promises its writes (ThesisVersion +
+            # ConfidenceSnapshot + ThesisClaim rows + the workspace's thesis
+            # columns) land atomically or not at all. A bare try/except around
+            # it here isn't enough — by the time it raises, some of those
+            # writes may already be flushed, and committing afterward would
+            # persist a half-built version. A SAVEPOINT scopes the rollback to
+            # just this block, so the research record and ws.thesis/confidence
+            # update (already staged above, outside the savepoint) still land.
+            thesis_version = None
+            try:
+                async with db.begin_nested():
+                    thesis_version = await create_thesis_version(db, ws, research, state)
+            except Exception:
+                logger.exception(
+                    "Thesis versioning failed for workspace_id=%s — research saved without a new version",
+                    workspace_id,
+                )
+                thesis_version = None
 
             await db.commit()
-    except Exception as e:
-        print(f"[workspace] save error: {e}")
+            return thesis_version.to_summary_dict() if thesis_version else None
+    except Exception:
+        logger.exception("Failed to save research result for workspace_id=%s", workspace_id)
+        return None

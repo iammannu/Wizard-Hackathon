@@ -53,6 +53,7 @@ class AgentState:
     recommendation: str = ""
     explanation: str = ""
     key_risks: list[str] = field(default_factory=list)
+    key_assumptions: list[str] = field(default_factory=list)
     invalidation_conditions: list[str] = field(default_factory=list)
     known_unknowns: list[str] = field(default_factory=list)
 

@@ -241,6 +241,12 @@ export const useWorkspaceStore = create((set, get) => ({
           // Refresh workspace list so sidebar shows updated confidence/thesis
           get().loadWorkspaces()
         }
+
+        if (event.type === 'thesis_version') {
+          set(s => ({
+            currentResult: s.currentResult ? { ...s.currentResult, thesis_version: event.thesis_version } : s.currentResult,
+          }))
+        }
       }
     } catch (err) {
       addLog({ type: 'error', message: err.message })

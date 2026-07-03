@@ -96,4 +96,11 @@ export const workspaceApi = {
   // SSE streaming research within workspace
   streamResearch: (id, query, depth='full') =>
     streamSSE(`/v1/workspaces/${id}/research`, { query, depth }),
+
+  // Living Thesis
+  getThesis:            (id)         => get(`/v1/workspaces/${id}/thesis`),
+  getThesisVersions:    (id)         => get(`/v1/workspaces/${id}/thesis/versions`),
+  getThesisVersion:     (id, vId)    => get(`/v1/workspaces/${id}/thesis/versions/${vId}`),
+  getConfidenceHistory: (id)         => get(`/v1/workspaces/${id}/thesis/confidence-history`),
+  getThesisClaims:      (id, status) => get(`/v1/workspaces/${id}/thesis/claims${status ? `?status=${status}` : ''}`),
 }
