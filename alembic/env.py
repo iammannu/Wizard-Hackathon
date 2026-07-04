@@ -26,6 +26,10 @@ from app.core.config import get_settings
 from app.models import user as _user_models            # noqa: F401
 from app.models import workspace as _workspace_models  # noqa: F401
 from app.models import thesis as _thesis_models        # noqa: F401
+from app.documents.models import document as _document_models  # noqa: F401
+from app.documents.models import chunk as _chunk_models        # noqa: F401
+from app.documents.models import entity as _entity_models      # noqa: F401
+from app.documents.models import citation as _citation_models  # noqa: F401
 
 config = context.config
 

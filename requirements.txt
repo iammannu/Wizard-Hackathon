@@ -20,7 +20,12 @@ httpx==0.27.2
 openai==1.51.0
 
 # Research providers (sponsor integrations)
-tavily-python==0.5.0       # Tavily Search API — cross-validation layer
+tavily-python==0.5.0       # Tavily Search API — Tier 3 verification layer only (see app/documents/)
+
+# Document Intelligence (Phase 2) — primary-source ingestion, not web search
+beautifulsoup4==4.12.3     # HTML section parsing for SEC filings + generic IR pages
+pypdf==5.0.1               # PDF text + page extraction (investor decks, shareholder letters)
+tiktoken==0.8.0            # accurate token counting for budgeted chunking
 
 # Utils
 python-dotenv==1.0.1

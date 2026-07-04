@@ -20,9 +20,20 @@ class Settings(BaseSettings):
     default_model: str = "gpt-4o"
     fast_model: str = "gpt-4o-mini"
 
-    # Research providers (sponsor integrations)
-    youcom_api_key: str = ""   # You.com Web Search API — primary research engine
-    tavily_api_key: str = ""   # Tavily Search API — cross-validation layer
+    # Research providers — Tier 3 verification/freshness layer only.
+    # Document Intelligence (app/documents/) is the primary knowledge source;
+    # these supplement it, they do not replace it. See app/documents/providers/.
+    youcom_api_key: str = ""
+    tavily_api_key: str = ""
+
+    # Document Intelligence — SEC EDGAR (Tier 1 primary source)
+    # SEC requires a compliant User-Agent identifying the requester on every
+    # call (https://www.sec.gov/os/webmaster-faq#developers) — format:
+    # "Company/App Name contact@example.com". Requests are refused, not sent
+    # with a placeholder, if this is left empty — silently violating SEC's
+    # fair-access policy is worse than failing loudly. Set a real one in .env
+    # before ingesting in production.
+    sec_edgar_user_agent: str = ""
 
     # DB — SQLite by default, swap for Postgres when you need to scale
     database_url: str = "sqlite+aiosqlite:///./alphaforage.db"
