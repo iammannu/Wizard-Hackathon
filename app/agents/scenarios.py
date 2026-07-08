@@ -65,18 +65,21 @@ External evidence:
 
 {f"Debate conclusion: {debate_conclusion}" if debate_conclusion else ""}
 
-Return a JSON array (NOT wrapped in an object):
-[{{
-  "name": "scenario name from the list above",
-  "probability": 0.0-1.0 (must sum to ~1.0 across all scenarios),
-  "confidence": 0.0-1.0 (how confident we are in this scenario's structure),
-  "summary": "2-3 sentences describing this specific scenario",
-  "key_assumptions": ["assumption 1", "assumption 2", "assumption 3"],
-  "key_catalysts": ["what triggers this scenario"],
-  "estimated_upside_pct": number (positive for gains, negative for losses),
-  "time_horizon": "6-12 months" | "1-2 years" | "2-5 years",
-  "investment_implication": "what an investor should do in this scenario"
-}}]""",
+Return a JSON object with a top-level "scenarios" array (the API's JSON mode
+requires a top-level object, not a bare array):
+{{"scenarios": [
+  {{
+    "name": "scenario name from the list above",
+    "probability": 0.0-1.0 (must sum to ~1.0 across all scenarios),
+    "confidence": 0.0-1.0 (how confident we are in this scenario's structure),
+    "summary": "2-3 sentences describing this specific scenario",
+    "key_assumptions": ["assumption 1", "assumption 2", "assumption 3"],
+    "key_catalysts": ["what triggers this scenario"],
+    "estimated_upside_pct": number (positive for gains, negative for losses),
+    "time_horizon": "6-12 months" | "1-2 years" | "2-5 years",
+    "investment_implication": "what an investor should do in this scenario"
+  }}
+]}}""",
         user=f"Query: {state.query}\nTickers: {state.tickers}\nIntent: {state.intent}",
     )
 

@@ -152,6 +152,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"  # .env also carries docker-compose-only vars (API_PORT, WEB_PORT)
 
 
 @lru_cache
