@@ -86,8 +86,10 @@ async def technical_agent(state: AgentState) -> dict:
         user=f"Ticker: {ticker}\nIndicators: {json.dumps(indicators)}\n{format_memory_for_agents(state)}",
         fast=True,
     )
+    if not result:
+        result = {"signal": "neutral", "confidence": 0.5, "key_finding": f"RSI={rsi}"}
     result["data"] = indicators
-    return result or {"signal": "neutral", "confidence": 0.5, "key_finding": f"RSI={rsi}", "data": indicators}
+    return result
 
 
 async def fundamental_agent(state: AgentState) -> dict:

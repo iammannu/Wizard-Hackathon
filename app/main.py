@@ -13,8 +13,14 @@ Monolith FastAPI app. One process handles:
 Deployed on InsForge infrastructure. AI inference via Nebius GPU cluster (future).
 """
 import asyncio
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
 from app.routers import auth, market, intelligence, screener
 from app.routers import workspaces
 from app.routers import documents, retrieval
