@@ -18,7 +18,7 @@ import asyncio
 import json
 from typing import Optional, Callable, Awaitable
 from app.agents.state import AgentState
-from app.agents.base import llm_json
+from app.agents.base import llm_json, recall_memory
 from app.agents.agents import (
     technical_agent, fundamental_agent, sentiment_agent,
     valuation_agent, risk_agent, macro_agent,
@@ -124,6 +124,40 @@ Default to "stock_analysis" when the query involves an investment thesis, sector
     state.timeframe = result.get("timeframe", "general")
     state.active_agents = active
     await emit({"type": "intent_parsed", "intent": intent, "tickers": tickers, "agents": active})
+    return state
+
+
+async def gather_memory(state: AgentState, emit: Callable) -> AgentState:
+    """Recall persistent cross-session memory (app/memory/) before any agent
+    calls its LLM — the per-run counterpart to gather_evidence() below, run
+    right after intent parsing so state.tickers is already populated.
+    Best-effort: a recall failure degrades to no memory context rather than
+    failing the run, same resilience contract as the per-agent try/except in
+    run_agents()."""
+    workspace_pack = None
+    if state.workspace_id:
+        try:
+            workspace_pack = await recall_memory(state.query, workspace_id=state.workspace_id, top_k=6)
+        except Exception as e:
+            print(f"[memory error] workspace recall: {e}")
+
+    company_packs: dict[str, dict] = {}
+    for ticker in (state.tickers or [])[:3]:
+        try:
+            pack = await recall_memory(state.query, ticker=ticker, top_k=6)
+            if pack.items:
+                company_packs[ticker] = pack.model_dump(mode="json")
+        except Exception as e:
+            print(f"[memory error] company recall {ticker}: {e}")
+
+    state.memory_context = {
+        "workspace": workspace_pack.model_dump(mode="json") if workspace_pack and workspace_pack.items else None,
+        "company": company_packs,
+    }
+    total_items = (len(workspace_pack.items) if workspace_pack else 0) + sum(
+        len(p["items"]) for p in company_packs.values()
+    )
+    await emit({"type": "memory_recalled", "items_found": total_items})
     return state
 
 
@@ -251,6 +285,7 @@ Generate institutional-grade investment thesis as JSON:
   "bull_case": {{"summary":"string","key_points":["3-4 specific points with data"],"probability":0-1}},
   "bear_case": {{"summary":"string","key_points":["3-4 specific points with data"],"probability":0-1}},
   "key_risks": ["4-5 specific risks with context"],
+  "key_assumptions": ["3-4 load-bearing assumptions this thesis depends on"],
   "invalidation_conditions": ["3 conditions that would invalidate the bull case"],
   "known_unknowns": ["3-4 things we cannot currently assess"]
 }}
@@ -269,6 +304,7 @@ Be specific. Reference actual agent findings. Institutional quality.""",
     state.bull_case = result.get("bull_case", {})
     state.bear_case = result.get("bear_case", {})
     state.key_risks = result.get("key_risks", [])
+    state.key_assumptions = result.get("key_assumptions", [])
     state.invalidation_conditions = result.get("invalidation_conditions", [])
     state.known_unknowns = result.get("known_unknowns", [])
     await emit({"type": "synthesis_complete", "confidence": boosted_confidence})
@@ -300,6 +336,11 @@ async def run_research(
 
     # 1. Parse intent
     state = await parse_intent(state, emit)
+
+    # 1.5. Recall persistent cross-session memory (app/memory/) — before any
+    # agent calls its LLM, so agents that read state.memory_context (see
+    # app.agents.base.format_memory_for_agents) have it available.
+    state = await gather_memory(state, emit)
 
     # 2. Gather evidence (You.com + Tavily) — graceful degradation if keys missing
     await emit({"type": "evidence_searching", "message": "Searching You.com + Tavily..."})

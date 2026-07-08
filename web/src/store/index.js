@@ -135,7 +135,7 @@ export const useResearchStore = create((set, get) => ({
         }
       }
     } catch (err) {
-      patch(() => ({ text: `Connection error: ${err.message}. Is the API running on :8000?`, streaming: false }))
+      patch(() => ({ text: `Connection error: ${err.message}. Is the API reachable?`, streaming: false }))
     }
 
     set({ isStreaming: false })
@@ -240,6 +240,12 @@ export const useWorkspaceStore = create((set, get) => ({
           set({ currentResult: event })
           // Refresh workspace list so sidebar shows updated confidence/thesis
           get().loadWorkspaces()
+        }
+
+        if (event.type === 'thesis_version') {
+          set(s => ({
+            currentResult: s.currentResult ? { ...s.currentResult, thesis_version: event.thesis_version } : s.currentResult,
+          }))
         }
       }
     } catch (err) {

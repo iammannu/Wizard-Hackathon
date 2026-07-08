@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useIsMobile from '../lib/useIsMobile.js'
 
 const AGENTS = [
   { name: 'Research Coordinator', role: 'Orchestrates the team', signal: 'active', color: '#a29bfe' },
@@ -43,6 +44,7 @@ export function Landing() {
   const navigate = useNavigate()
   const [activeAgent, setActiveAgent] = useState(0)
   const [ticker, setTicker] = useState(0)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     const t1 = setInterval(() => setActiveAgent(a => (a + 1) % AGENTS.length), 1800)
@@ -54,24 +56,27 @@ export function Landing() {
     <div style={{ minHeight: '100vh', overflowX: 'hidden', background: 'var(--bg)' }}>
 
       {/* ── Nav ── */}
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, height: '64px', display: 'flex', alignItems: 'center', padding: '0 48px', gap: '32px', background: 'rgba(7,7,13,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
+      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, height: '64px', display: 'flex', alignItems: 'center', padding: isMobile ? '0 16px' : '0 48px', gap: isMobile ? '12px' : '32px', background: 'rgba(7,7,13,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }} onClick={() => navigate('/')}>
           <div style={{ width: '30px', height: '30px', background: 'linear-gradient(135deg, var(--accent), var(--accent2))', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 800, color: '#fff', boxShadow: '0 0 20px rgba(108,92,231,0.4)' }}>α</div>
-          <span>AlphaForage</span>
-          <span style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '4px', background: 'rgba(108,92,231,0.15)', color: 'var(--accent2)', border: '1px solid rgba(108,92,231,0.25)', fontFamily: 'var(--font-mono)', letterSpacing: '0.5px' }}>v2.0</span>
+          {!isMobile && <span>AlphaForage</span>}
+          {!isMobile && <span style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '4px', background: 'rgba(108,92,231,0.15)', color: 'var(--accent2)', border: '1px solid rgba(108,92,231,0.25)', fontFamily: 'var(--font-mono)', letterSpacing: '0.5px' }}>v2.0</span>}
         </div>
-        <div style={{ display: 'flex', gap: '28px', marginLeft: 'auto', alignItems: 'center' }}>
-          {[['Workspaces', '/app/workspaces'], ['Research', '/app/research'], ['Screener', '/app/screener']].map(([l, p]) => (
+        <div style={{ display: 'flex', gap: isMobile ? '0' : '28px', marginLeft: 'auto', alignItems: 'center' }}>
+          {/* Middle nav links collapse away on mobile — the app is one tap
+              away via the CTA button either way, and there's no room for
+              four extra tap targets next to the logo on a phone-width nav. */}
+          {!isMobile && [['Workspaces', '/app/workspaces'], ['Research', '/app/research'], ['Screener', '/app/screener']].map(([l, p]) => (
             <span key={l} style={{ fontSize: '14px', color: 'var(--muted)', cursor: 'pointer', transition: 'color 0.15s' }}
               onMouseEnter={e => e.target.style.color = 'var(--text)'}
               onMouseLeave={e => e.target.style.color = 'var(--muted)'}
               onClick={() => navigate(p)}>{l}</span>
           ))}
           <button onClick={() => navigate('/app/workspaces')}
-            style={{ marginLeft: '12px', padding: '9px 22px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, var(--accent), #8b5cf6)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 20px rgba(108,92,231,0.35)', transition: 'all 0.2s' }}
+            style={{ marginLeft: isMobile ? '0' : '12px', padding: isMobile ? '9px 14px' : '9px 22px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg, var(--accent), #8b5cf6)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 20px rgba(108,92,231,0.35)', transition: 'all 0.2s', whiteSpace: 'nowrap' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 28px rgba(108,92,231,0.5)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(108,92,231,0.35)' }}>
-            Open Platform →
+            {isMobile ? 'Open →' : 'Open Platform →'}
           </button>
         </div>
       </nav>
@@ -131,7 +136,7 @@ export function Landing() {
       </section>
 
       {/* ── Agent Team ── */}
-      <section style={{ padding: '80px 48px', maxWidth: '1200px', margin: '0 auto' }}>
+      <section style={{ padding: isMobile ? '48px 20px' : '80px 48px', maxWidth: '1200px', margin: '0 auto'}}>
         <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--accent2)', fontWeight: 600, marginBottom: '12px' }}>Your Research Team</div>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px,4vw,52px)', fontWeight: 800, letterSpacing: '-2px', marginBottom: '8px' }}>12 specialists. One platform.</h2>
         <p style={{ color: 'var(--muted)', fontSize: '15px', marginBottom: '40px', maxWidth: '500px' }}>All run in parallel. All stream their reasoning live. The Supervisor synthesizes conflicts into a single institutional thesis.</p>
@@ -165,7 +170,7 @@ export function Landing() {
       </section>
 
       {/* ── Workspaces Demo ── */}
-      <section style={{ padding: '80px 48px', maxWidth: '1200px', margin: '0 auto' }}>
+      <section style={{ padding: isMobile ? '48px 20px' : '80px 48px', maxWidth: '1200px', margin: '0 auto'}}>
         <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--accent2)', fontWeight: 600, marginBottom: '12px' }}>Living Research Workspaces</div>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px,4vw,52px)', fontWeight: 800, letterSpacing: '-2px', marginBottom: '8px' }}>Your thesis. Evolving forever.</h2>
         <p style={{ color: 'var(--muted)', fontSize: '15px', marginBottom: '40px', maxWidth: '520px' }}>Create a workspace for any investment theme. AI researches continuously. Return tomorrow and find it updated.</p>
@@ -200,10 +205,10 @@ export function Landing() {
       </section>
 
       {/* ── Features ── */}
-      <section style={{ padding: '80px 48px', maxWidth: '1200px', margin: '0 auto' }}>
+      <section style={{ padding: isMobile ? '48px 20px' : '80px 48px', maxWidth: '1200px', margin: '0 auto'}}>
         <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--accent2)', fontWeight: 600, marginBottom: '12px' }}>Platform Capabilities</div>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px,4vw,52px)', fontWeight: 800, letterSpacing: '-2px', marginBottom: '48px' }}>Built for institutional depth.</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1px', background: 'var(--border)', border: '1px solid var(--border)', borderRadius: '16px', overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '1px', background: 'var(--border)', border: '1px solid var(--border)', borderRadius: '16px', overflow: 'hidden' }}>
           {FEATURES.map(f => (
             <div key={f.title}
               style={{ background: 'var(--surface)', padding: '32px', transition: 'background 0.2s' }}
@@ -218,8 +223,8 @@ export function Landing() {
       </section>
 
       {/* ── Scenario Simulation ── */}
-      <section style={{ padding: '80px 48px', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', alignItems: 'center' }}>
+      <section style={{ padding: isMobile ? '48px 20px' : '80px 48px', maxWidth: '1200px', margin: '0 auto'}}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '24px' : '40px', alignItems: 'center' }}>
           <div>
             <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--accent2)', fontWeight: 600, marginBottom: '12px' }}>Scenario Simulation Engine</div>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px,3.5vw,44px)', fontWeight: 800, letterSpacing: '-1.5px', marginBottom: '16px' }}>Five futures.<br />Not one prediction.</h2>
@@ -250,12 +255,12 @@ export function Landing() {
       </section>
 
       {/* ── Sponsor section ── */}
-      <section style={{ padding: '64px 48px', maxWidth: '1200px', margin: '0 auto', borderTop: '1px solid var(--border)' }}>
+      <section style={{ padding: isMobile ? '40px 20px' : '64px 48px', maxWidth: '1200px', margin: '0 auto', borderTop: '1px solid var(--border)'}}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{ fontSize: '11px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--muted)', fontWeight: 600, marginBottom: '8px' }}>Powered By</div>
           <p style={{ color: 'var(--muted)', fontSize: '14px' }}>Deeply integrated sponsor technologies — not just logos</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: '12px' }}>
           {[
             { name: 'You.com', desc: 'Primary research engine. Every workspace searches You.com for live intelligence.', color: '#00cba9' },
             { name: 'Tavily',  desc: 'Cross-validation layer. AI answers that verify or challenge You.com findings.', color: '#a29bfe' },

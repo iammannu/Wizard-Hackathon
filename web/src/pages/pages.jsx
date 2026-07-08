@@ -3,6 +3,7 @@ import { BarChart2, Loader2, Briefcase, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api.js'
 import { useResearchStore } from '../store/index.js'
+import useIsMobile from '../lib/useIsMobile.js'
 
 // ── Shared styles ──────────────────────────────────────────────────────
 const S = {
@@ -114,6 +115,7 @@ export function Market() {
 
 function QuoteDetail({ d }) {
   const up = (d.change_pct ?? 0) >= 0
+  const isMobile = useIsMobile()
   return (
     <div style={{ background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:'12px', padding:'20px' }}>
       <div style={{ display:'flex', alignItems:'baseline', gap:'14px', marginBottom:'20px', flexWrap:'wrap' }}>
@@ -123,7 +125,7 @@ function QuoteDetail({ d }) {
           {up?'▲':'▼'} ${Math.abs(d.change??0).toFixed(2)} ({Math.abs(d.change_pct??0).toFixed(2)}%)
         </span>
       </div>
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px' }}>
+      <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:'12px' }}>
         {[['Open','$'+(d.open??0).toFixed(2)],['High','$'+(d.high??0).toFixed(2)],['Low','$'+(d.low??0).toFixed(2)],['Volume',(d.volume??0).toLocaleString()]].map(([k,v]) => (
           <div key={k} style={S.dataItem}><div style={S.dataLabel}>{k}</div><div style={S.dataVal}>{v}</div></div>
         ))}
@@ -133,6 +135,7 @@ function QuoteDetail({ d }) {
 }
 
 function FundamentalsDetail({ d }) {
+  const isMobile = useIsMobile()
   const rows = [
     ['P/E Ratio', d.pe_ratio?.toFixed(1)],
     ['P/S Ratio', d.ps_ratio?.toFixed(1)],
@@ -151,7 +154,7 @@ function FundamentalsDetail({ d }) {
   return (
     <div style={{ background:'var(--surface2)', border:'1px solid var(--border)', borderRadius:'12px', padding:'20px' }}>
       <div style={{ fontFamily:'var(--font-display)', fontSize:'18px', fontWeight:600, marginBottom:'16px' }}>{d._ticker} — Fundamentals</div>
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'10px' }}>
+      <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:'10px' }}>
         {rows.map(([k,v]) => (
           <div key={k} style={S.dataItem}><div style={S.dataLabel}>{k}</div><div style={S.dataVal}>{v}</div></div>
         ))}
@@ -171,6 +174,7 @@ export function Portfolio() {
   const [quotes, setQuotes] = useState({})
   const sendQuery = useResearchStore(s => s.sendQuery)
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     POSITIONS.forEach(async p => {
@@ -207,7 +211,7 @@ export function Portfolio() {
       </div>
       <div style={{ flex:1, overflowY:'auto', padding:'28px' }}>
         {/* Summary cards */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'12px', marginBottom:'28px' }}>
+        <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:'12px', marginBottom:'28px' }}>
           {[
             { label:'Total Value',  val:'$'+totalValue.toFixed(0), sub: (totalPnl>=0?'+':'-')+'$'+Math.abs(totalPnl).toFixed(0), color:'var(--text)' },
             { label:'Total P&L',    val:(totalPnl>=0?'+':'-')+'$'+Math.abs(totalPnl).toFixed(0), sub:(totalPnl/Math.max(totalCost,1)*100).toFixed(1)+'%', color:totalPnl>=0?'var(--bull)':'var(--bear)' },
@@ -228,7 +232,8 @@ export function Portfolio() {
             <span style={{ fontFamily:'var(--font-display)', fontSize:'15px', fontWeight:600 }}>Positions</span>
             <span style={{ fontSize:'12px', color:'var(--muted)' }}>Click any row for AI research</span>
           </div>
-          <table style={{ width:'100%', borderCollapse:'collapse', fontSize:'13px' }}>
+          <div style={{ overflowX: isMobile ? 'auto' : undefined }}>
+          <table style={{ width:'100%', minWidth: isMobile ? '640px' : undefined, borderCollapse:'collapse', fontSize:'13px' }}>
             <thead>
               <tr>
                 {['Ticker','Name','Shares','Avg Cost','Price','Value','P&L','P&L %',''].map(h => (
@@ -259,6 +264,7 @@ export function Portfolio() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Loader2, Trash2, ChevronRight, Zap, TrendingUp } from 'lucide-react'
+import { LIFECYCLE_META } from '../lib/thesisConstants.js'
 import { useWorkspaceStore } from '../store/index.js'
 
 const TEMPLATE_WORKSPACES = [
@@ -196,12 +197,19 @@ function WorkspaceCard({ ws, onOpen, onDelete }) {
             {ws.description && <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>{ws.description}</div>}
           </div>
         </div>
-        <button onClick={e => { e.stopPropagation(); onDelete() }}
-          style={{ padding: '4px', borderRadius: '6px', border: 'none', background: 'transparent', color: 'var(--muted)', cursor: 'pointer', opacity: 0.5, transition: 'opacity 0.15s' }}
-          onMouseEnter={e => e.currentTarget.style.opacity = 1}
-          onMouseLeave={e => e.currentTarget.style.opacity = 0.5}>
-          <Trash2 size={13} />
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          {ws.thesis_version_count > 0 && (
+            <span title={`Thesis: ${ws.thesis_lifecycle_stage}`} style={{ fontSize: '14px', lineHeight: 1 }}>
+              {(LIFECYCLE_META[ws.thesis_lifecycle_stage] || LIFECYCLE_META.forming).icon}
+            </span>
+          )}
+          <button onClick={e => { e.stopPropagation(); onDelete() }}
+            style={{ padding: '4px', borderRadius: '6px', border: 'none', background: 'transparent', color: 'var(--muted)', cursor: 'pointer', opacity: 0.5, transition: 'opacity 0.15s' }}
+            onMouseEnter={e => e.currentTarget.style.opacity = 1}
+            onMouseLeave={e => e.currentTarget.style.opacity = 0.5}>
+            <Trash2 size={13} />
+          </button>
+        </div>
       </div>
 
       {ws.tracked_tickers?.length > 0 && (

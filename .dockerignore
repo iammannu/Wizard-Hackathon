@@ -1,0 +1,28 @@
+# Backend build context — excludes anything not needed to run the API so
+# secrets and dev artifacts never get baked into the image (COPY . . does
+# not respect .gitignore, only this file).
+
+.git
+.venv
+__pycache__
+**/__pycache__
+*.pyc
+
+# Secrets — never bake these into an image layer, even if present locally.
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Local data / logs
+*.db
+*.db-journal
+data/
+*.log
+
+# Frontend has its own build context (web/Dockerfile) — not needed here.
+web/
+
+# Misc
+.DS_Store
+tests/

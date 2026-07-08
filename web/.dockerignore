@@ -1,0 +1,12 @@
+node_modules
+.pnpm-store
+dist
+.DS_Store
+*.log
+
+# Secrets — never bake these into an image layer, even if present locally.
+# VITE_API_URL is passed in as a build ARG instead (see web/Dockerfile).
+.env
+.env.*
+!.env.example
+!.env.production.example
