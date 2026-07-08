@@ -27,5 +27,17 @@ beautifulsoup4==4.12.3     # HTML section parsing for SEC filings + generic IR p
 pypdf==5.0.1               # PDF text + page extraction (investor decks, shareholder letters)
 tiktoken==0.8.0            # accurate token counting for budgeted chunking
 
+# Semantic Retrieval Engine (Milestone 1)
+numpy==1.26.4              # brute-force cosine similarity for SQLiteVectorStore (the active default)
+rank-bm25==0.2.2           # BM25 half of hybrid search
+
+# Optional — install only if you select the corresponding provider/store in
+# .env (embedding_provider / vector_store_provider). Lazy-imported, so the
+# app runs fine without these until you opt in.
+# faiss-cpu==1.8.0              # vector_store_provider=faiss
+# chromadb==0.5.5               # vector_store_provider=chroma
+# pinecone-client==5.0.1        # vector_store_provider=pinecone
+# sentence-transformers==3.1.1  # embedding_provider=local (also pulls in torch)
+
 # Utils
 python-dotenv==1.0.1

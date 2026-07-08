@@ -4,6 +4,7 @@ import { ArrowLeft, Send, Loader2, Zap, CheckCircle, Clock, AlertCircle, Chevron
 import { useWorkspaceStore } from '../store/index.js'
 import { workspaceApi } from '../lib/api.js'
 import { LIFECYCLE_META, CHANGE_TYPE_META, CLAIM_STATUS_META } from '../lib/thesisConstants.js'
+import useIsMobile from '../lib/useIsMobile.js'
 
 const SIGNAL_COLOR = { bullish: 'var(--bull)', bearish: 'var(--bear)', neutral: 'var(--muted)', active: 'var(--accent2)' }
 const SIGNAL_BG   = { bullish: 'rgba(0,203,169,0.1)', bearish: 'rgba(255,107,107,0.1)', neutral: 'rgba(255,255,255,0.04)', active: 'rgba(108,92,231,0.1)' }
@@ -18,6 +19,7 @@ export default function WorkspaceDetail() {
   const [activeTab, setActiveTab] = useState('agents')
   const [expandedSection, setExpandedSection] = useState(null)
   const textareaRef = useRef(null)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     workspaceApi.get(id).then(ws => {
@@ -93,10 +95,16 @@ export default function WorkspaceDetail() {
         )}
       </div>
 
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', overflow: 'hidden' }}>
 
         {/* Left: Agent Observability + Query */}
-        <div style={{ width: '320px', flexShrink: 0, borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{
+          width: isMobile ? '100%' : '320px', flexShrink: 0,
+          maxHeight: isMobile ? '280px' : undefined,
+          borderRight: isMobile ? 'none' : '1px solid var(--border)',
+          borderBottom: isMobile ? '1px solid var(--border)' : 'none',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        }}>
           {/* Agent panel tabs */}
           <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
             {[['agents', 'Agents'], ['log', 'Event Log']].map(([key, label]) => (
@@ -317,6 +325,7 @@ function EvidenceBanner({ evidence, isStreaming, streamLog }) {
 function ThesisSummary({ result }) {
   const conf = result.confidence ?? 0
   const confColor = conf >= 0.75 ? 'var(--bull)' : conf >= 0.55 ? 'var(--warn)' : 'var(--bear)'
+  const isMobile = useIsMobile()
 
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: '14px', overflow: 'hidden' }}>
@@ -355,7 +364,7 @@ function ThesisSummary({ result }) {
       </div>
 
       {/* Bull / Bear */}
-      <div style={{ padding: '18px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+      <div style={{ padding: '18px 20px', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '12px' }}>
         {[
           { label: 'Bull Case', data: result.bull_case, color: 'var(--bull)', bg: 'rgba(0,203,169,0.06)', border: 'rgba(0,203,169,0.2)' },
           { label: 'Bear Case', data: result.bear_case, color: 'var(--bear)', bg: 'rgba(255,107,107,0.06)', border: 'rgba(255,107,107,0.2)' },
@@ -650,6 +659,7 @@ function Sparkline({ data, color = 'var(--accent2)', height = 48 }) {
 }
 
 function DebateView({ debate }) {
+  const isMobile = useIsMobile()
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <div style={{ display: 'flex', gap: '10px', fontSize: '12px', color: 'var(--muted)' }}>
@@ -665,7 +675,7 @@ function DebateView({ debate }) {
           <div style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '10px', fontWeight: 600 }}>
             Round {round.round} — {round.type}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '10px' }}>
             <div style={{ background: 'rgba(0,203,169,0.06)', borderRadius: '8px', padding: '12px', border: '1px solid rgba(0,203,169,0.2)' }}>
               <div style={{ fontSize: '10px', color: 'var(--bull)', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.4px' }}>▲ {round.bull?.agent?.replace(/_/g,' ')}</div>
               <div style={{ fontSize: '12px', color: '#d4f1ea', lineHeight: 1.65 }}>{round.bull?.argument || round.bull?.key_point}</div>

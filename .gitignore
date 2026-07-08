@@ -1,8 +1,17 @@
 .venv/
 .env
+.env.local
+.env.production
+.env.*.local
 *.db
 .DS_Store
 __pycache__/
 *.pyc
+*.log
 web/node_modules/
 web/dist/
+web/.env
+web/.env.local
+web/.env.production
+web/.env.*.local
+web/.pnpm-store/

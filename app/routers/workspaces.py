@@ -18,6 +18,7 @@ from app.models.workspace import Workspace, WorkspaceResearch
 from app.models.thesis import ThesisVersion, ConfidenceSnapshot, ThesisClaim
 from app.agents.supervisor import run_research
 from app.thesis.versioner import create_thesis_version
+from app.memory.service import consolidate_research
 
 logger = logging.getLogger(__name__)
 
@@ -477,6 +478,20 @@ async def _save_research(workspace_id: str, query: str, state, result_dict: dict
                     workspace_id,
                 )
                 thesis_version = None
+
+            # Same isolation reasoning as thesis versioning above: memory
+            # extraction/consolidation is best-effort and must never take
+            # down the research save. A SAVEPOINT scopes any failure to just
+            # this block so the research row + thesis version already staged
+            # still commit.
+            try:
+                async with db.begin_nested():
+                    await consolidate_research(db, ws_uuid, research.id, state, thesis_version)
+            except Exception:
+                logger.exception(
+                    "Memory consolidation failed for workspace_id=%s — research saved without memory updates",
+                    workspace_id,
+                )
 
             await db.commit()
             return thesis_version.to_summary_dict() if thesis_version else None

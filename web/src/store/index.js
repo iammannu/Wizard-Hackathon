@@ -135,7 +135,7 @@ export const useResearchStore = create((set, get) => ({
         }
       }
     } catch (err) {
-      patch(() => ({ text: `Connection error: ${err.message}. Is the API running on :8000?`, streaming: false }))
+      patch(() => ({ text: `Connection error: ${err.message}. Is the API reachable?`, streaming: false }))
     }
 
     set({ isStreaming: false })

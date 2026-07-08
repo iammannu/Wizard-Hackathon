@@ -164,6 +164,43 @@ async def get_fundamentals(ticker: str) -> Optional[dict]:
         return None
 
 
+async def get_earnings(ticker: str) -> list[dict]:
+    """Recent quarterly earnings surprises (actual vs estimate), most recent
+    first — Finnhub free-tier endpoint. Used by app/monitoring/providers/
+    earnings.py to detect a newly-reported quarter."""
+    key = f"earnings:{ticker}"
+    if hit := cache_get(key):
+        return hit
+    try:
+        async with httpx.AsyncClient(timeout=8.0, headers={"X-Finnhub-Token": settings.finnhub_api_key}) as client:
+            r = await client.get("https://finnhub.io/api/v1/stock/earnings", params={"symbol": ticker})
+            r.raise_for_status()
+            results = r.json() or []
+            cache_set(key, results, ttl=3600 * 6)
+            return results
+    except Exception as e:
+        print(f"[finnhub] earnings {ticker}: {e}")
+        return []
+
+
+async def get_insider_transactions(ticker: str) -> list[dict]:
+    """Recent insider buy/sell transactions — Finnhub free-tier endpoint.
+    Used by app/monitoring/providers/insider_trading.py."""
+    key = f"insider:{ticker}"
+    if hit := cache_get(key):
+        return hit
+    try:
+        async with httpx.AsyncClient(timeout=8.0, headers={"X-Finnhub-Token": settings.finnhub_api_key}) as client:
+            r = await client.get("https://finnhub.io/api/v1/stock/insider-transactions", params={"symbol": ticker})
+            r.raise_for_status()
+            results = r.json().get("data", [])
+            cache_set(key, results, ttl=3600 * 6)
+            return results
+    except Exception as e:
+        print(f"[finnhub] insider transactions {ticker}: {e}")
+        return []
+
+
 async def get_analyst(ticker: str) -> Optional[dict]:
     key = f"analyst:{ticker}"
     if hit := cache_get(key):

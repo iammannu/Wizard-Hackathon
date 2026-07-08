@@ -51,7 +51,13 @@ input,textarea,select{font-family:var(--font-b)}
 
 <script>
 // ── Minimal router ────────────────────────────────────
-const API = 'http://localhost:8000';
+// Standalone prototype, not served by the backend or built by Vite — no
+// build-time env injection available here, so this falls back to the
+// current origin at runtime (correct when served from behind the same
+// reverse proxy as the API; opened directly from disk otherwise, where
+// window.location.origin is "null" — fall back to localhost for that case).
+// const API = (window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'http://localhost:8000';
+const API = window.location.origin.replace(/\/$/, "");
 let currentPage = window.location.hash.slice(1) || 'home';
 const listeners = [];
 function navigate(page) {
@@ -547,8 +553,8 @@ function renderLanding() {
   </div>
   <div>
     <div class="footer-col-title">API</div>
-    <a class="footer-link" href="http://localhost:8000/docs" target="_blank">Swagger Docs</a>
-    <a class="footer-link" href="http://localhost:8000/health" target="_blank">Health Check</a>
+    <a class="footer-link" id="footer-docs-link" href="#" target="_blank">Swagger Docs</a>
+    <a class="footer-link" id="footer-health-link" href="#" target="_blank">Health Check</a>
   </div>
   <div>
     <div class="footer-col-title">Stack</div>
@@ -1523,6 +1529,15 @@ function renderEvents() {
 }
 
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Footer API links — built from the same runtime-resolved API constant
+// used for actual fetch() calls above, not a second hardcoded URL.
+(() => {
+  const docsLink = document.getElementById('footer-docs-link');
+  const healthLink = document.getElementById('footer-health-link');
+  if (docsLink) docsLink.href = API + '/docs';
+  if (healthLink) healthLink.href = API + '/health';
+})();
 </script>
 </body>
 </html>

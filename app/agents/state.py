@@ -18,6 +18,13 @@ class AgentState:
     # Research evidence (You.com + Tavily)
     evidence: Optional[dict] = None
 
+    # AI Memory (Milestone 3) — recalled once per run, before agents execute,
+    # via app.memory.service.recall_for_agent(). {"workspace": MemoryPack-as-dict,
+    # "company": {ticker: MemoryPack-as-dict}} — see app/agents/supervisor.py's
+    # gather_memory() step. None until that step runs or when nothing relevant
+    # is on file yet.
+    memory_context: Optional[dict] = None
+
     # Original 6 agent outputs
     technical_output: Optional[dict] = None
     fundamental_output: Optional[dict] = None

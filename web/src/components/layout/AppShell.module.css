@@ -105,3 +105,97 @@
   overflow: hidden;
   min-width: 0;
 }
+
+/* ── Mobile (≤768px): sidebar becomes a slide-in drawer behind a topbar ── */
+
+.mobileTopbar {
+  display: none;
+}
+
+.backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .shell {
+    flex-direction: column;
+    height: 100dvh;
+  }
+
+  .mobileTopbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+  .menuButton:active { background: rgba(255, 255, 255, 0.05); }
+
+  .mobileLogo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .mobileLogo .logoText { font-size: 14px; }
+
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 40;
+    animation: fadeIn 0.15s ease;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    width: 260px;
+    min-width: 260px;
+    max-width: 82vw;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 2px 0 24px rgba(0, 0, 0, 0.4);
+  }
+  .sidebar.sidebarOpen {
+    transform: translateX(0);
+  }
+  /* The sidebar's own logo header is redundant once the mobile topbar
+     shows the same branding — hide it only on small screens. */
+  .sidebar > .logo {
+    display: none;
+  }
+
+  .main {
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Ensure every interactive nav row stays a comfortable touch target on any
+   touch-capable device, not just narrow viewports (a tablet in portrait
+   mode benefits too). */
+@media (pointer: coarse) {
+  .navItem { padding: 12px 18px; }
+  .menuButton { width: 44px; height: 44px; }
+}

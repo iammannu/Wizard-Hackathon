@@ -126,8 +126,9 @@ async def ingest_document(db, provider: DocumentProvider, discovered: Discovered
     await db.flush()  # assign version.id for the DocumentChunk FK
 
     chunks = chunk_sections(sections)
+    new_chunks: list[DocumentChunk] = []
     for index, chunk in enumerate(chunks):
-        db.add(DocumentChunk(
+        row = DocumentChunk(
             document_id=document.id,
             document_version_id=version.id,
             chunk_index=index,
@@ -135,7 +136,9 @@ async def ingest_document(db, provider: DocumentProvider, discovered: Discovered
             text=chunk.text,
             token_count=chunk.token_count,
             content_hash=_hash(chunk.text),
-        ))
+        )
+        db.add(row)
+        new_chunks.append(row)
 
     document.content_hash = content_hash
     document.status = "chunked"
@@ -143,6 +146,21 @@ async def ingest_document(db, provider: DocumentProvider, discovered: Discovered
     document.latest_version_number = version_number
     document.error_message = None
     document.updated_at = datetime.now(timezone.utc)
+
+    if new_chunks:
+        # Auto-embed hook (milestone 1): covers both first-time embedding and
+        # "automatic re-embedding on document updates" for free — a new
+        # document version re-runs this same chunk-creation loop, so there's
+        # no separate re-embed code path needed. Requires chunk.id, hence the
+        # flush (DocumentChunk.id defaults client-side via uuid.uuid4, but
+        # flushing keeps this consistent with the document/version flushes
+        # above rather than relying on that detail).
+        await db.flush()
+        from app.documents.embeddings.queue import EmbedQueueItem, enqueue
+        await enqueue([
+            EmbedQueueItem(chunk_id=c.id, document_id=document.id, text=c.text, content_hash=c.content_hash)
+            for c in new_chunks
+        ])
 
     return document
 

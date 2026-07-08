@@ -7,7 +7,7 @@ import asyncio
 import json
 import math
 from app.agents.state import AgentState
-from app.agents.base import llm_json, get_quote, get_candles, get_fundamentals, get_analyst, get_news
+from app.agents.base import llm_json, get_quote, get_candles, get_fundamentals, get_analyst, get_news, format_memory_for_agents
 
 
 # ── Shared technical indicators ───────────────────────────────────────────────
@@ -83,7 +83,7 @@ async def technical_agent(state: AgentState) -> dict:
     result = await llm_json(
         system="""You are a technical analysis agent. Analyze indicators and return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","trend":"uptrend"|"downtrend"|"sideways","key_levels":{"support":number,"resistance":number},"signals":[]}""",
-        user=f"Ticker: {ticker}\nIndicators: {json.dumps(indicators)}",
+        user=f"Ticker: {ticker}\nIndicators: {json.dumps(indicators)}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = indicators
@@ -104,7 +104,7 @@ async def fundamental_agent(state: AgentState) -> dict:
     result = await llm_json(
         system="""You are a fundamental analysis agent. Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","quality_score":0-10,"growth_trajectory":"accelerating"|"decelerating"|"stable"|"declining","balance_sheet_health":"strong"|"adequate"|"concerning"|"weak","earnings_quality":"high"|"medium"|"low","red_flags":[],"data":{}}""",
-        user=f"Ticker: {ticker}\nRatios: {json.dumps(fundamentals or {})}\nAnalyst: {json.dumps(analyst or {})}",
+        user=f"Ticker: {ticker}\nRatios: {json.dumps(fundamentals or {})}\nAnalyst: {json.dumps(analyst or {})}\n{format_memory_for_agents(state)}",
     )
     result["data"] = {**(fundamentals or {}), "analyst": analyst}
     return result
@@ -123,7 +123,7 @@ async def sentiment_agent(state: AgentState) -> dict:
     result = await llm_json(
         system="""You are a sentiment analysis agent. Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","overall_sentiment":-1.0_to_1.0,"sentiment_trend":"improving"|"deteriorating"|"stable","news_summary":"2-3 sentences","key_catalysts":[],"risk_events":[]}""",
-        user=f"Ticker: {ticker or 'N/A'}\nNews:\n{news_text or 'No news'}\nExternal research:\n{evidence_snippet or 'None'}",
+        user=f"Ticker: {ticker or 'N/A'}\nNews:\n{news_text or 'No news'}\nExternal research:\n{evidence_snippet or 'None'}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = {"news_count": len(news_items)}
@@ -145,7 +145,7 @@ async def valuation_agent(state: AgentState) -> dict:
     result = await llm_json(
         system="""You are a valuation agent. Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","fair_value_range":{"bear":number,"base":number,"bull":number},"current_premium_discount":number,"valuation_method":"string","margin_of_safety":number,"is_undervalued":boolean,"valuation_commentary":"2-3 sentences"}""",
-        user=f"Ticker: {ticker}\nPrice: {price}\nRatios: {json.dumps(fundamentals or {})}",
+        user=f"Ticker: {ticker}\nPrice: {price}\nRatios: {json.dumps(fundamentals or {})}\n{format_memory_for_agents(state)}",
     )
     result["data"] = {"price": price}
     return result
@@ -173,7 +173,7 @@ async def risk_agent(state: AgentState) -> dict:
     result = await llm_json(
         system="""You are a risk analysis agent. Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","risk_level":"low"|"medium"|"high"|"very_high","var_1d_pct":number,"key_risks":[],"risk_mitigants":[]}""",
-        user=f"Ticker: {ticker or 'N/A'}\nRisk Metrics: {json.dumps(risk_data)}",
+        user=f"Ticker: {ticker or 'N/A'}\nRisk Metrics: {json.dumps(risk_data)}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = risk_data
@@ -189,7 +189,7 @@ async def macro_agent(state: AgentState) -> dict:
     result = await llm_json(
         system="""You are a macro analyst. Assess the macroeconomic environment relevant to this query. Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","rate_environment":"rising"|"falling"|"stable","inflation_trend":"rising"|"falling"|"stable","economic_cycle":"expansion"|"peak"|"contraction"|"trough","key_risks":[],"sector_impacts":{}}""",
-        user=f"Query: {state.query}\nTickers: {state.tickers}\nExternal macro context:\n{evidence_snippet or 'None'}",
+        user=f"Query: {state.query}\nTickers: {state.tickers}\nExternal macro context:\n{evidence_snippet or 'None'}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     return result
@@ -216,7 +216,7 @@ async def growth_investor_agent(state: AgentState) -> dict:
 Assess the stock through a pure growth lens: TAM expansion, revenue acceleration, market share gains, R&D pipeline, and competitive moat from technology.
 Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence from growth perspective","tam_opportunity":"large"|"medium"|"small","revenue_acceleration":"accelerating"|"stable"|"decelerating","market_share_trajectory":"gaining"|"stable"|"losing","growth_moat":"strong"|"moderate"|"weak","growth_catalysts":["catalyst1","catalyst2"],"growth_risks":["risk1"]}""",
-        user=f"Ticker: {ticker}\nFinancials: {json.dumps(fundamentals)}\nResearch context: {evidence_snippet}",
+        user=f"Ticker: {ticker}\nFinancials: {json.dumps(fundamentals)}\nResearch context: {evidence_snippet}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = {"ticker": ticker}
@@ -241,7 +241,7 @@ Assess intrinsic value, business quality, competitive moat width, and margin of 
 Never chase momentum — only buy with meaningful margin of safety.
 Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","intrinsic_value_estimate":number,"margin_of_safety_pct":number,"moat_width":"wide"|"narrow"|"none","business_quality":"excellent"|"good"|"fair"|"poor","owner_earnings_quality":"high"|"medium"|"low","value_catalysts":["catalyst1"],"value_risks":["risk1"]}""",
-        user=f"Ticker: {ticker}\nPrice: {(quote or {}).get('price', 0)}\nRatios: {json.dumps(fundamentals)}",
+        user=f"Ticker: {ticker}\nPrice: {(quote or {}).get('price', 0)}\nRatios: {json.dumps(fundamentals)}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = {"price": (quote or {}).get("price", 0)}
@@ -287,7 +287,7 @@ async def quant_researcher_agent(state: AgentState) -> dict:
 Assess momentum quality, trend strength, mean-reversion probability, and factor tilts.
 Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","momentum_quality":"strong"|"moderate"|"weak"|"negative","trend_strength":"strong"|"moderate"|"weak","mean_reversion_risk":"high"|"medium"|"low","factor_tilts":["momentum","quality","value","low_vol"],"quant_signals":["signal1","signal2"]}""",
-        user=f"Ticker: {ticker}\nQuant metrics: {json.dumps(quant_data)}",
+        user=f"Ticker: {ticker}\nQuant metrics: {json.dumps(quant_data)}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = quant_data
@@ -315,7 +315,7 @@ async def industry_specialist_agent(state: AgentState) -> dict:
 Analyze competitive dynamics, Porter's Five Forces, industry lifecycle, and secular trends affecting this investment.
 Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"1 sentence","industry_lifecycle":"emerging"|"growth"|"mature"|"declining","competitive_intensity":"high"|"medium"|"low","barriers_to_entry":"high"|"medium"|"low","secular_tailwinds":["trend1","trend2"],"structural_headwinds":["headwind1"],"positioning":"leader"|"challenger"|"niche"|"commodity"}""",
-        user=f"Ticker: {ticker or 'N/A'}\nQuery: {state.query}\nIndustry context: {evidence_snippet[:600]}",
+        user=f"Ticker: {ticker or 'N/A'}\nQuery: {state.query}\nIndustry context: {evidence_snippet[:600]}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = {"ticker": ticker}
@@ -345,7 +345,7 @@ Find the bear case: overvaluation, accounting red flags, competitive threats, ma
 Be specific and data-driven. Challenge the bull consensus aggressively.
 Return JSON:
 {"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"most important bear thesis point","overvaluation_concern":"high"|"medium"|"low","accounting_red_flags":["flag1"],"competitive_threats":["threat1","threat2"],"management_concerns":["concern1"],"short_catalysts":["catalyst1","catalyst2"],"bear_thesis_summary":"2-3 sentences"}""",
-        user=f"Ticker: {ticker or 'N/A'}\nRatios: {json.dumps(fundamentals)}\nNews: {news_text}\nContext: {evidence_snippet[:400]}",
+        user=f"Ticker: {ticker or 'N/A'}\nRatios: {json.dumps(fundamentals)}\nNews: {news_text}\nContext: {evidence_snippet[:400]}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = {"ticker": ticker}
@@ -371,7 +371,7 @@ The current consensus is {dominant}. Your job is to challenge this consensus.
 Question every assumption. Surface the risks everyone is ignoring. Be intellectually honest but contrarian.
 Return JSON:
 {{"signal":"bullish"|"bearish"|"neutral","confidence":0-1,"key_finding":"the most dangerous assumption being made","consensus_flaw":"what the consensus is missing","hidden_risks":["risk1","risk2","risk3"],"ignored_scenarios":["scenario1","scenario2"],"most_dangerous_assumption":"1 sentence","contrarian_view":"2-3 sentences"}}""",
-        user=f"Query: {state.query}\nTickers: {state.tickers}\nAgent consensus:\n{json.dumps(agent_signals, indent=2)[:600]}",
+        user=f"Query: {state.query}\nTickers: {state.tickers}\nAgent consensus:\n{json.dumps(agent_signals, indent=2)[:600]}\n{format_memory_for_agents(state)}",
         fast=True,
     )
     result["data"] = {"consensus": dominant, "agents_surveyed": len(agent_signals)}

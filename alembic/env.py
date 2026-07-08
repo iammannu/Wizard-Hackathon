@@ -30,6 +30,7 @@ from app.documents.models import document as _document_models  # noqa: F401
 from app.documents.models import chunk as _chunk_models        # noqa: F401
 from app.documents.models import entity as _entity_models      # noqa: F401
 from app.documents.models import citation as _citation_models  # noqa: F401
+from app.documents.models import embedding as _embedding_models  # noqa: F401
 
 config = context.config
 

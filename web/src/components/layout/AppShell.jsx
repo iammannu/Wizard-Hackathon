@@ -1,8 +1,8 @@
-import React from 'react'
-import { Outlet, NavLink, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   MessageSquare, SlidersHorizontal, BarChart2,
-  Briefcase, Calendar, Zap, Home,
+  Briefcase, Calendar, Zap, Home, Menu, X,
 } from 'lucide-react'
 import styles from './AppShell.module.css'
 
@@ -17,9 +17,34 @@ const NAV = [
 
 export default function AppShell() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  // Auto-close the mobile drawer on navigation — otherwise the sidebar
+  // stays open over the newly-navigated-to page.
+  useEffect(() => { setMobileOpen(false) }, [location.pathname])
+
   return (
     <div className={styles.shell}>
-      <aside className={styles.sidebar}>
+      <header className={styles.mobileTopbar}>
+        <button
+          type="button"
+          className={styles.menuButton}
+          onClick={() => setMobileOpen(o => !o)}
+          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileOpen}
+        >
+          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+        <div className={styles.mobileLogo} onClick={() => navigate('/')}>
+          <div className={styles.logoMark}>α</div>
+          <div className={styles.logoText}>AlphaForage</div>
+        </div>
+      </header>
+
+      {mobileOpen && <div className={styles.backdrop} onClick={() => setMobileOpen(false)} />}
+
+      <aside className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.logo} onClick={() => navigate('/')}>
           <div className={styles.logoMark}>α</div>
           <div>
@@ -71,7 +96,7 @@ export default function AppShell() {
           </div>
           <div className={styles.statusRow}>
             <span className={styles.statusDot} />
-            <span className={styles.statusText}>12 Agents · :8000</span>
+            <span className={styles.statusText}>12 Agents · Live</span>
           </div>
         </div>
       </aside>

@@ -1,4 +1,12 @@
-const BASE = '/api'
+// Production-safe API origin resolution: an explicit VITE_API_URL (baked in
+// at build time) wins when set — needed the moment the frontend is served
+// from a different origin than the backend (e.g. a static host + a
+// separately-deployed API). Falling back to window.location.origin keeps
+// today's same-origin-behind-a-proxy behavior working with zero config,
+// both in the Vite dev server (proxied to the backend, see vite.config.js)
+// and in a same-origin production deployment.
+export const API_BASE_URL = import.meta.env.VITE_API_URL ?? window.location.origin
+const BASE = `${API_BASE_URL}/api`
 
 async function get(path) {
   const r = await fetch(BASE + path)
@@ -64,7 +72,12 @@ export async function* streamResearch(query, depth = 'full') {
 // ── Market API ─────────────────────────────────────────────────────────────────
 
 export const api = {
-  health:       ()              => get('/v1/../health'),
+  // /health is served at the API root, not under /api/v1 — hits
+  // API_BASE_URL directly rather than going through BASE.
+  health:       ()              => fetch(`${API_BASE_URL}/health`).then(r => {
+                                      if (!r.ok) throw new Error(`${r.status} ${r.statusText}`)
+                                      return r.json()
+                                    }),
   quote:        (ticker)       => get(`/v1/market/stocks/${ticker}`),
   candles:      (ticker, n=60) => get(`/v1/market/stocks/${ticker}/candles?limit=${n}`),
   fundamentals: (ticker)       => get(`/v1/market/stocks/${ticker}/fundamentals`),
